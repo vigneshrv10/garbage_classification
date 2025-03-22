@@ -10,6 +10,7 @@ import plotly.express as px
 import pandas as pd
 import google.generativeai as genai
 from dotenv import load_dotenv
+import random
 
 # Load environment variables
 load_dotenv()
@@ -157,7 +158,7 @@ st.markdown("""
         position: fixed !important;
         bottom: 20px;
         right: 20px;
-        width: 350px;
+        width: 380px;
         z-index: 9999;
         background: white;
         border-radius: 15px;
@@ -177,7 +178,7 @@ st.markdown("""
     }
     
     .chat-header {
-        background-color: #4CAF50;
+        background: linear-gradient(135deg, #43a047 0%, #1b5e20 100%);
         color: white;
         padding: 15px;
         border-radius: 15px 15px 0 0;
@@ -194,51 +195,90 @@ st.markdown("""
     }
     
     .chat-header:hover {
-        background-color: #3e8e41;
+        background: linear-gradient(135deg, #388e3c 0%, #1a5e20 100%);
     }
     
     .chat-body {
-        background-color: white;
-        border: 1px solid #eee;
-        border-top: none;
-        border-radius: 0 0 15px 15px;
-        padding: 20px;
-        max-height: 400px;
+        background-color: #f9f9f9;
+        padding: 15px;
+        height: 350px;
         overflow-y: auto;
+        border-bottom: 1px solid #eee;
     }
     
     .chat-message {
         margin-bottom: 15px;
-        padding: 12px;
-        border-radius: 18px;
+        padding: 12px 15px;
+        border-radius: 12px;
         max-width: 85%;
         word-wrap: break-word;
-        animation: fadeIn 0.5s;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        line-height: 1.5;
+        font-size: 0.95em;
     }
     
     .user-message {
-        background-color: #e3f2fd;
-        margin-left: 15%;
-        color: #000;
-        border-bottom-right-radius: 5px;
+        background-color: #E8F5E9;
+        margin-left: auto;
+        border-bottom-right-radius: 4px;
+        color: #1e3932;
+        font-weight: 500;
     }
     
     .bot-message {
-        background-color: #f5f5f5;
-        margin-right: 15%;
-        color: #000;
-        border-bottom-left-radius: 5px;
+        background-color: white;
+        margin-right: auto;
+        border-bottom-left-radius: 4px;
+        color: #333;
+        border-left: 3px solid #4CAF50;
     }
     
     .chat-input {
-        margin-top: 10px;
         padding: 15px;
-        border-top: 1px solid #eee;
+        background-color: white;
+        border-radius: 0 0 15px 15px;
+    }
+    
+    .chat-input input {
+        border-radius: 20px;
+        border: 1px solid #ddd;
+        padding: 12px 15px;
+        width: 100%;
+        font-size: 0.95em;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .chat-input button {
+        border-radius: 20px;
+        background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.85em;
+    }
+    
+    .chat-input button:hover {
+        background: linear-gradient(135deg, #388e3c 0%, #1b5e20 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    /* Hide Streamlit branding */
+    #MainMenu {
+        visibility: hidden;
+    }
+    
+    footer {
+        visibility: hidden;
+    }
+    
+    header {
+        visibility: hidden;
     }
     
     div[data-testid="stToolbar"] {
@@ -246,94 +286,99 @@ st.markdown("""
     }
     
     .footer {
-        background-color: white;
+        text-align: center;
+        padding: 20px;
+        color: #666;
+        font-size: 0.8em;
+    }
+    
+    /* Team section styling */
+    .team-section {
+        background: linear-gradient(135deg, #43a047 0%, #1b5e20 100%);
         padding: 20px;
         border-radius: 15px;
-        text-align: center;
-        margin-top: 30px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        color: white;
+        margin-bottom: 30px;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
     }
     
-    /* Custom file uploader */
-    .css-1offfwp {
-        border-radius: 15px !important;
-        border: 2px dashed #4CAF50 !important;
-        background-color: rgba(76, 175, 80, 0.05) !important;
-    }
-    
-    /* Input fields */
-    div[data-baseweb="input"] {
-        border-radius: 10px !important;
-    }
-    
-    /* Sidebar styling */
-    section[data-testid="stSidebar"] {
-        background-color: #1e3932;
-        border-right: 1px solid #e0e0e0;
-    }
-    
-    section[data-testid="stSidebar"] > div {
-        padding: 2rem 1rem;
-    }
-    
-    section[data-testid="stSidebar"] h1, 
-    section[data-testid="stSidebar"] h2, 
-    section[data-testid="stSidebar"] h3 {
-        color: #ffffff !important;
-    }
-    
-    section[data-testid="stSidebar"] p, 
-    section[data-testid="stSidebar"] span, 
-    section[data-testid="stSidebar"] div {
-        color: #e0e0e0 !important;
-    }
-    
-    /* Tabs in sidebar */
-    section[data-testid="stSidebar"] [data-baseweb="tab"] {
-        background-color: #2b4d44 !important;
-        color: #ffffff !important;
-    }
-    
-    section[data-testid="stSidebar"] [aria-selected="true"] {
-        background-color: #4CAF50 !important;
+    .team-title {
         color: white !important;
+        text-align: center;
+        margin-bottom: 15px;
+        font-weight: 700 !important;
     }
     
-    /* Progress bars */
-    div[role="progressbar"] > div {
-        background-color: #4CAF50 !important;
+    .team-members {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
     }
     
-    /* Custom JavaScript for chat widget toggle */
-    .stApp iframe[height="0"] {
-        display: none;
+    .team-member {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        backdrop-filter: blur(5px);
+        transition: all 0.3s ease;
+        flex: 1 1 calc(33.333% - 15px);
+        min-width: 200px;
     }
+    
+    .team-member:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-5px);
+    }
+    
+    .team-member-name {
+        font-weight: 600;
+        font-size: 1.1em;
+        margin-bottom: 5px;
+    }
+    
+    .team-member-id {
+        opacity: 0.8;
+    }
+    
+    /* Waste theme elements */
+    .recycle-icon {
+        font-size: 2em;
+        color: #4CAF50;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    
+    .waste-category-icon {
+        font-size: 1.5em;
+        margin-right: 10px;
+    }
+    
+    .app-header {
+        background: linear-gradient(135deg, #43a047 0%, #1b5e20 100%);
+        padding: 20px;
+        border-radius: 15px;
+        color: white;
+        margin-bottom: 20px;
+        text-align: center;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+    
+    .app-title {
+        color: white !important;
+        font-size: 2.5em !important;
+        font-weight: 700 !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .app-subtitle {
+        color: rgba(255, 255, 255, 0.9) !important;
+        font-size: 1.2em !important;
+        font-weight: 400 !important;
+    }
+    
     </style>
-    
-    <script>
-    // JavaScript to handle chat widget toggle
-    document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(function() {
-            const chatIcon = document.querySelector('.chat-icon');
-            const chatWidget = document.querySelector('.chat-widget');
-            const chatClose = document.querySelector('.chat-close');
-            
-            if (chatIcon && chatWidget) {
-                chatIcon.addEventListener('click', function() {
-                    chatWidget.classList.add('visible');
-                    chatIcon.style.display = 'none';
-                });
-                
-                if (chatClose) {
-                    chatClose.addEventListener('click', function() {
-                        chatWidget.classList.remove('visible');
-                        chatIcon.style.display = 'flex';
-                    });
-                }
-            }
-        }, 1000);
-    });
-    </script>
 """, unsafe_allow_html=True)
 
 # Initialize session state
@@ -342,13 +387,23 @@ if 'history' not in st.session_state:
 if 'dark_mode' not in st.session_state:
     st.session_state.dark_mode = False
 
-# Initialize session state for chat
 if 'chat_messages' not in st.session_state:
     st.session_state.chat_messages = []
-if 'chat_visible' not in st.session_state:
-    st.session_state.chat_visible = False
 if 'current_analysis' not in st.session_state:
-    st.session_state.current_analysis = None
+    st.session_state.current_analysis = ""
+if 'waste_quotes' not in st.session_state:
+    st.session_state.waste_quotes = [
+        "Waste isn't waste until we waste it.",
+        "There is no such thing as 'away'. When we throw anything away, it must go somewhere.",
+        "The greatest threat to our planet is the belief that someone else will save it.",
+        "Recycling turns things into other things, which is like magic!",
+        "Reduce, Reuse, Recycle - the three Rs of sustainable waste management.",
+        "The Earth is what we all have in common. Let's keep it clean.",
+        "Every time you recycle, the Earth smiles a little.",
+        "Small acts, when multiplied by millions of people, can transform the world.",
+        "Waste management is not just about managing waste, it's about managing resources.",
+        "A clean environment is a happy environment."
+    ]
 
 # Load the model and processor (cached for efficiency)
 @st.cache_resource
@@ -387,17 +442,17 @@ def analyze_with_gemini(image, model):
 # Function to handle chat interactions
 def process_chat_query(query, context):
     try:
-        model = genai.GenerativeModel('gemini-2.0-flash')
-        prompt = f"""As a waste management expert, answer the following question about waste:
-        Context about the waste: {context}
-        User Question: {query}
+        if not GOOGLE_API_KEY:
+            return "Sorry, I can't process your query without a valid API key. Please add your Gemini API key to the .env file."
         
-        Provide a clear, concise, and helpful response focusing on proper waste management practices."""
+        # Prepare prompt with context
+        prompt = f"Context: {context}\n\nUser Query: {query}\n\nProvide a helpful response about waste management and classification. Be concise and informative."
         
-        response = model.generate_content(prompt)
+        # Generate response
+        response = gemini_model.generate_content(prompt)
         return response.text
     except Exception as e:
-        return f"I apologize, but I encountered an error: {str(e)}"
+        return f"Sorry, I encountered an error: {str(e)}"
 
 # Enhanced class labels and disposal methods
 WASTE_CATEGORIES = {
@@ -454,6 +509,38 @@ WASTE_CATEGORIES = {
 processor, model = load_model()
 gemini_model = load_gemini_model()
 
+# App Header with Team Details
+st.markdown('<div class="app-header">', unsafe_allow_html=True)
+st.markdown('<h1 class="app-title">🌍 Smart Waste Classification</h1>', unsafe_allow_html=True)
+st.markdown('<p class="app-subtitle">Upload an image of waste to get classification and disposal instructions</p>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Team Section
+st.markdown('<div class="team-section">', unsafe_allow_html=True)
+st.markdown('<h2 class="team-title">👥 Our Team</h2>', unsafe_allow_html=True)
+st.markdown('<div class="team-members">', unsafe_allow_html=True)
+
+team_members = [
+    {"name": "N. Manu", "id": "99220041537"},
+    {"name": "R Venkata Vignesh", "id": "99220041334"},
+    {"name": "V Bhanu Prakash", "id": "99220041025"},
+    {"name": "P Sreenivasulu", "id": "9922005060"},
+    {"name": "S Sai Kousick", "id": "99220041007"},
+    {"name": "I Inbathamizhan", "id": "99220003016"}
+]
+
+for member in team_members:
+    st.markdown(f'''
+    <div class="team-member">
+        <div class="recycle-icon">♻️</div>
+        <div class="team-member-name">{member["name"]}</div>
+        <div class="team-member-id">{member["id"]}</div>
+    </div>
+    ''', unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
+
 # Sidebar
 with st.sidebar:
     st.title("♻️ Smart Waste Classification")
@@ -508,24 +595,28 @@ with st.sidebar:
         """)
         
         st.divider()
-        st.caption("Version 1.0.0 | Made with ❤️ for a cleaner planet")
 
-# Main content
-st.title("🌍 Smart Waste Classification")
-st.markdown("Upload an image of waste to get classification and disposal instructions from both our ML model and Gemini AI.")
+# Upload section with improved styling
+st.markdown('<div class="info-box">', unsafe_allow_html=True)
+st.markdown('<div class="waste-category-icon">📸</div> <span style="font-size: 1.3em; font-weight: 600;">Upload Waste Image</span>', unsafe_allow_html=True)
+st.markdown('<p>Take a photo of waste items and our AI will classify them and provide disposal instructions</p>', unsafe_allow_html=True)
 
-# Create a container for the upload section with improved styling
 upload_container = st.container()
 with upload_container:
     st.markdown('<div class="upload-box">', unsafe_allow_html=True)
     uploaded_file = st.file_uploader("Drag and drop or click to upload", type=["jpg", "png", "jpeg"])
     st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB")
     st.image(image, caption="Uploaded Image", use_column_width=True)
 
     with st.spinner('Analyzing image...'):
+        # Display a random quote about waste handling
+        quote_placeholder = st.empty()
+        quote_placeholder.info(f"**Waste Wisdom:** {random.choice(st.session_state.waste_quotes)}")
+        
         # Create two columns for the two different analyses
         col1, col2 = st.columns(2)
         
@@ -645,7 +736,7 @@ if uploaded_file is not None:
 
 # Footer
 st.markdown('<div class="footer">', unsafe_allow_html=True)
-st.markdown("Made with ❤️ for a cleaner planet | Learn more about [waste management](https://www.epa.gov/recycle)")
+st.markdown("Learn more about [waste management](https://www.epa.gov/recycle)")
 st.markdown("</div>", unsafe_allow_html=True)
 
 def render_chat_widget():
@@ -670,7 +761,7 @@ def render_chat_widget():
         st.markdown(
             """
             <div class="chat-header">
-                <span>Waste Management Assistant</span>
+                <span>♻️ Waste Management Assistant</span>
                 <span class="chat-close">✕</span>
             </div>
             """, 
@@ -678,19 +769,27 @@ def render_chat_widget():
         )
         
         # Chat body
-        st.markdown('<div class="chat-body">', unsafe_allow_html=True)
+        st.markdown('<div class="chat-body" id="chat-body">', unsafe_allow_html=True)
         
         # Display chat messages
-        for message in st.session_state.chat_messages:
-            message_class = "user-message" if message['type'] == 'user' else "bot-message"
+        if st.session_state.chat_messages:
+            for message in st.session_state.chat_messages:
+                message_class = "user-message" if message['type'] == 'user' else "bot-message"
+                st.markdown(
+                    f'<div class="chat-message {message_class}">{message["text"]}</div>',
+                    unsafe_allow_html=True
+                )
+        else:
             st.markdown(
-                f'<div class="chat-message {message_class}">{message["text"]}</div>',
+                '<div class="chat-message bot-message">Hello! I\'m your waste management assistant. Ask me anything about waste classification, recycling, or disposal methods.</div>',
                 unsafe_allow_html=True
             )
         
+        st.markdown('</div>', unsafe_allow_html=True)
+        
         # Chat input section
         st.markdown('<div class="chat-input">', unsafe_allow_html=True)
-        user_input = st.text_input("Type your question here:", key="chat_input", 
+        user_input = st.text_input("", key="chat_input", 
                                  placeholder="Ask about waste management...")
         
         col1, col2 = st.columns([4, 1])
@@ -722,6 +821,56 @@ def render_chat_widget():
         st.markdown('</div>', unsafe_allow_html=True)
         
         st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Add JavaScript for chat widget functionality
+        st.markdown(
+            """
+            <script>
+                // Function to toggle chat widget visibility
+                function toggleChatWidget() {
+                    const chatIcon = document.querySelector('.chat-icon');
+                    const chatWidget = document.querySelector('.chat-widget');
+                    
+                    if (chatIcon && chatWidget) {
+                        chatIcon.addEventListener('click', function() {
+                            chatWidget.style.display = 'block';
+                            chatIcon.style.display = 'none';
+                            
+                            // Scroll chat to bottom
+                            const chatBody = document.getElementById('chat-body');
+                            if (chatBody) {
+                                chatBody.scrollTop = chatBody.scrollHeight;
+                            }
+                        });
+                        
+                        const chatClose = document.querySelector('.chat-close');
+                        if (chatClose) {
+                            chatClose.addEventListener('click', function() {
+                                chatWidget.style.display = 'none';
+                                chatIcon.style.display = 'flex';
+                            });
+                        }
+                    }
+                    
+                    // Auto-scroll chat to bottom
+                    const chatBody = document.getElementById('chat-body');
+                    if (chatBody) {
+                        chatBody.scrollTop = chatBody.scrollHeight;
+                    }
+                }
+                
+                // Run when DOM is fully loaded
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', function() {
+                        setTimeout(toggleChatWidget, 1000);
+                    });
+                } else {
+                    setTimeout(toggleChatWidget, 1000);
+                }
+            </script>
+            """,
+            unsafe_allow_html=True
+        )
 
 # Add chat widget at the end
 render_chat_widget()
